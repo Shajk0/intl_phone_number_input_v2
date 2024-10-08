@@ -18,3 +18,6 @@
 
 ## 0.0.7
 * changed the naming conventions and country list
+
+## 0.0.8
+* naming convention error fix

@@ -118,7 +118,7 @@ class PhoneNumberTypeUtil {
 }
 
 /// Extension on PhoneNumberType
-extension phoneNumberTypeProperties on PhoneNumberType {
+extension PhoneNumberTypeProperties on PhoneNumberType {
   /// Returns the index [int] of the current `PhoneNumberType`
   int get value {
     switch (this) {
