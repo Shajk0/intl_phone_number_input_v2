@@ -12,3 +12,9 @@
 
 ## 0.0.5
 * changed to libphonenumber
+
+## 0.0.6
+* changed to libphonenumber_plugin
+
+## 0.0.7
+* changed the naming conventions and country list
