@@ -47,8 +47,8 @@ class Item extends StatelessWidget {
             style: textStyle,
           ),
           Icon(
-            Icons.keyboard_arrow_down_sharp,
-            color: Colors.grey,
+            Icons.arrow_drop_down,
+            color: Theme.of(context).iconTheme.color,
             size: 14,
           ),
         ],

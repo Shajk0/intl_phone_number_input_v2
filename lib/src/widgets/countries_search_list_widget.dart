@@ -110,6 +110,7 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
                     if (widget.favoriteHeadlineWidget != null)
                       widget.favoriteHeadlineWidget!,
                     ListView.builder(
+                      padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: widget.favoriteCountries?.length,
@@ -175,6 +176,7 @@ class DirectionalCountryListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      //contentPadding: EdgeInsets.zero,
       key: Key(TestHelper.countryItemKeyValue(country.alpha2Code)),
       leading: (showFlags
           ? _Flag(country: country, useEmoji: useEmoji, circleFlags: false)
