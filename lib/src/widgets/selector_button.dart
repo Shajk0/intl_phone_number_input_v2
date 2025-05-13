@@ -184,7 +184,7 @@ class SelectorButton extends StatelessWidget {
                   textDirection: Directionality.of(inheritedContext),
                   child: Container(
                     decoration: ShapeDecoration(
-                      color: Theme.of(context).canvasColor,
+                      color: Theme.of(context).colorScheme.surface,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(12),
