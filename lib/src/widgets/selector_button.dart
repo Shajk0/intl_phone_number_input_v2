@@ -17,6 +17,10 @@ class SelectorButton extends StatelessWidget {
   final String? locale;
   final bool isEnabled;
   final bool isScrollControlled;
+  final EdgeInsetsGeometry? searchBoxPadding;
+  final Widget? favoriteHeadlineWidget;
+  final Widget? countryListHeadlineWidget;
+  final List<String>? favoriteCountries;
 
   final ValueChanged<Country?> onCountryChanged;
 
@@ -31,7 +35,11 @@ class SelectorButton extends StatelessWidget {
       required this.locale,
       required this.onCountryChanged,
       required this.isEnabled,
-      required this.isScrollControlled})
+      required this.isScrollControlled,
+      required this.searchBoxPadding,
+      required this.favoriteHeadlineWidget,
+      required this.countryListHeadlineWidget,
+      required this.favoriteCountries})
       : super(key: key);
 
   @override
@@ -136,6 +144,10 @@ class SelectorButton extends StatelessWidget {
               showFlags: selectorConfig.showFlags,
               useEmoji: selectorConfig.useEmoji,
               autoFocus: autoFocusSearchField,
+              searchBoxPadding: searchBoxPadding,
+              favoriteCountries: favoriteCountries,
+              favoriteHeadlineWidget: favoriteHeadlineWidget,
+              countryListHeadlineWidget: countryListHeadlineWidget,
             ),
           ),
         ),
@@ -164,6 +176,9 @@ class SelectorButton extends StatelessWidget {
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: DraggableScrollableSheet(
+              maxChildSize: 0.9,
+              minChildSize: 0.5,
+              initialChildSize: 0.9,
               builder: (BuildContext context, ScrollController controller) {
                 return Directionality(
                   textDirection: Directionality.of(inheritedContext),
@@ -185,6 +200,10 @@ class SelectorButton extends StatelessWidget {
                       showFlags: selectorConfig.showFlags,
                       useEmoji: selectorConfig.useEmoji,
                       autoFocus: autoFocusSearchField,
+                      searchBoxPadding: searchBoxPadding,
+                      favoriteHeadlineWidget: favoriteHeadlineWidget,
+                      countryListHeadlineWidget: countryListHeadlineWidget,
+                      favoriteCountries: favoriteCountries,
                     ),
                   ),
                 );

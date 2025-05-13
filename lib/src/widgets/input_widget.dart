@@ -76,6 +76,7 @@ class InternationalPhoneNumberInput extends StatefulWidget {
   final InputBorder? inputBorder;
   final InputDecoration? inputDecoration;
   final InputDecoration? searchBoxDecoration;
+  final EdgeInsetsGeometry? searchBoxPadding;
   final Color? cursorColor;
   final TextAlign textAlign;
   final TextAlignVertical textAlignVertical;
@@ -83,6 +84,10 @@ class InternationalPhoneNumberInput extends StatefulWidget {
 
   final FocusNode? focusNode;
   final Iterable<String>? autofillHints;
+
+  final Widget? favoriteHeadlineWidget;
+  final Widget? countryListHeadlineWidget;
+  final List<String>? favoriteCountries;
 
   final List<String>? countries;
 
@@ -125,6 +130,10 @@ class InternationalPhoneNumberInput extends StatefulWidget {
     this.cursorColor,
     this.autofillHints,
     this.countries,
+    this.searchBoxPadding,
+    this.favoriteHeadlineWidget,
+    this.countryListHeadlineWidget,
+    this.favoriteCountries,
   }) : super(key: key);
 
   @override
@@ -303,6 +312,10 @@ class _InputWidgetState extends State<InternationalPhoneNumberInput> {
         isEnabled: widget.isEnabled,
         autoFocusSearchField: widget.autoFocusSearch,
         isScrollControlled: widget.countrySelectorScrollControlled,
+        searchBoxPadding: widget.searchBoxPadding,
+        favoriteHeadlineWidget: widget.favoriteHeadlineWidget,
+        countryListHeadlineWidget: widget.countryListHeadlineWidget,
+        favoriteCountries: widget.favoriteCountries,
       ));
     }
 
@@ -410,6 +423,10 @@ class _InputWidgetView
                   isEnabled: widget.isEnabled,
                   autoFocusSearchField: widget.autoFocusSearch,
                   isScrollControlled: widget.countrySelectorScrollControlled,
+                  searchBoxPadding: widget.searchBoxPadding,
+                  favoriteHeadlineWidget: widget.favoriteHeadlineWidget,
+                  countryListHeadlineWidget: widget.countryListHeadlineWidget,
+                  favoriteCountries: widget.favoriteCountries,
                 ),
                 SizedBox(
                   height: state.selectorButtonBottomPadding,

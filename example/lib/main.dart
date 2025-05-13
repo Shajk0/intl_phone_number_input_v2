@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Demo',
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       darkTheme: darkTheme,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -44,6 +44,27 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             InternationalPhoneNumberInput(
+              favoriteCountries: ['US', 'NG'],
+              favoriteHeadlineWidget: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Favoriten',
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              countryListHeadlineWidget: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Länder',
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              searchBoxDecoration: InputDecoration(
+                labelText: 'Suchen',
+                hintText: 'Suchen',
+              ),
               onInputChanged: (PhoneNumber number) {
                 print(number.phoneNumber);
               },

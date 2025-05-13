@@ -12,6 +12,10 @@ class CountrySearchListWidget extends StatefulWidget {
   final bool autoFocus;
   final bool? showFlags;
   final bool? useEmoji;
+  final EdgeInsetsGeometry? searchBoxPadding;
+  final List<String>? favoriteCountries;
+  final Widget? favoriteHeadlineWidget;
+  final Widget? countryListHeadlineWidget;
 
   CountrySearchListWidget(
     this.countries,
@@ -21,6 +25,10 @@ class CountrySearchListWidget extends StatefulWidget {
     this.showFlags,
     this.useEmoji,
     this.autoFocus = false,
+    this.searchBoxPadding,
+    this.favoriteCountries,
+    this.favoriteHeadlineWidget,
+    this.countryListHeadlineWidget,
   });
 
   @override
@@ -31,6 +39,7 @@ class CountrySearchListWidget extends StatefulWidget {
 class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
   late TextEditingController _searchController = TextEditingController();
   late List<Country> filteredCountries;
+  List<Country>? favoriteCountries;
 
   @override
   void initState() {
@@ -40,6 +49,14 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
       locale: widget.locale,
       value: value,
     );
+    if (widget.favoriteCountries != null &&
+        widget.favoriteCountries!.isNotEmpty) {
+      favoriteCountries = widget.countries
+          .where((country) =>
+              widget.favoriteCountries!.contains(country.alpha2Code))
+          .toList();
+    }
+
     super.initState();
   }
 
@@ -61,7 +78,8 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+          padding: widget.searchBoxPadding ??
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: TextFormField(
             key: Key(TestHelper.CountrySearchInputKeyValue),
             decoration: getSearchBoxDecoration(),
@@ -80,21 +98,49 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
             },
           ),
         ),
-        Flexible(
-          child: ListView.builder(
+        Expanded(
+          child: SingleChildScrollView(
             controller: widget.scrollController,
-            shrinkWrap: true,
-            itemCount: filteredCountries.length,
-            itemBuilder: (BuildContext context, int index) {
-              Country country = filteredCountries[index];
+            child: Column(
+              children: [
+                if (favoriteCountries != null &&
+                    favoriteCountries!.isNotEmpty) ...{
+                  if (widget.favoriteHeadlineWidget != null)
+                    widget.favoriteHeadlineWidget!,
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: widget.favoriteCountries?.length,
+                    itemBuilder: (context, index) {
+                      return DirectionalCountryListTile(
+                        country: favoriteCountries![index],
+                        locale: widget.locale,
+                        showFlags: widget.showFlags!,
+                        useEmoji: widget.useEmoji!,
+                      );
+                    },
+                  ),
+                },
+                if (widget.countryListHeadlineWidget != null)
+                  widget.countryListHeadlineWidget!,
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: widget.scrollController,
+                  shrinkWrap: true,
+                  itemCount: filteredCountries.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Country country = filteredCountries[index];
 
-              return DirectionalCountryListTile(
-                country: country,
-                locale: widget.locale,
-                showFlags: widget.showFlags!,
-                useEmoji: widget.useEmoji!,
-              );
-            },
+                    return DirectionalCountryListTile(
+                      country: country,
+                      locale: widget.locale,
+                      showFlags: widget.showFlags!,
+                      useEmoji: widget.useEmoji!,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -127,7 +173,9 @@ class DirectionalCountryListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       key: Key(TestHelper.countryItemKeyValue(country.alpha2Code)),
-      leading: (showFlags ? _Flag(country: country, useEmoji: useEmoji) : null),
+      leading: (showFlags
+          ? _Flag(country: country, useEmoji: useEmoji, circleFlags: false)
+          : null),
       title: Align(
         alignment: AlignmentDirectional.centerStart,
         child: Text(
@@ -136,13 +184,16 @@ class DirectionalCountryListTile extends StatelessWidget {
           textAlign: TextAlign.start,
         ),
       ),
-      subtitle: Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: Text(
-          '${country.dialCode ?? ''}',
-          textDirection: TextDirection.ltr,
-          textAlign: TextAlign.start,
-        ),
+      // subtitle: Align(
+      //   alignment: AlignmentDirectional.centerStart,
+      //   child: Text(
+      //     '${country.dialCode ?? ''}',
+      //     textDirection: TextDirection.ltr,
+      //     textAlign: TextAlign.start,
+      //   ),
+      // ),
+      trailing: Text(
+        '${country.dialCode ?? ''}',
       ),
       onTap: () => Navigator.of(context).pop(country),
     );
@@ -152,8 +203,10 @@ class DirectionalCountryListTile extends StatelessWidget {
 class _Flag extends StatelessWidget {
   final Country? country;
   final bool? useEmoji;
+  final bool? circleFlags;
 
-  const _Flag({Key? key, this.country, this.useEmoji}) : super(key: key);
+  const _Flag({Key? key, this.country, this.useEmoji, this.circleFlags})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -165,12 +218,19 @@ class _Flag extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall,
                   )
                 : country?.flagUri != null
-                    ? CircleAvatar(
-                        backgroundImage: AssetImage(
-                          country!.flagUri,
-                          package: 'intl_phone_number_input_v2',
-                        ),
-                      )
+                    ? circleFlags == true
+                        ? CircleAvatar(
+                            backgroundImage: AssetImage(
+                              country!.flagUri,
+                              package: 'intl_phone_number_input_v2',
+                            ),
+                          )
+                        : Image.asset(
+                            country!.flagUri,
+                            package: 'intl_phone_number_input_v2',
+                            width: 32,
+                            height: 32,
+                          )
                     : SizedBox.shrink(),
           )
         : SizedBox.shrink();
