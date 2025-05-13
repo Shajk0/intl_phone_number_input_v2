@@ -74,76 +74,79 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: widget.searchBoxPadding ??
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: TextFormField(
-            key: Key(TestHelper.CountrySearchInputKeyValue),
-            decoration: getSearchBoxDecoration(),
-            controller: _searchController,
-            autofocus: widget.autoFocus,
-            cursorColor: Colors.black,
-            onChanged: (value) {
-              final String value = _searchController.text.trim();
-              return setState(
-                () => filteredCountries = Utils.filterCountries(
-                  countries: widget.countries,
-                  locale: widget.locale,
-                  value: value,
-                ),
-              );
-            },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Padding(
+            padding: widget.searchBoxPadding ??
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: TextFormField(
+              key: Key(TestHelper.CountrySearchInputKeyValue),
+              decoration: getSearchBoxDecoration(),
+              controller: _searchController,
+              autofocus: widget.autoFocus,
+              cursorColor: Colors.black,
+              onChanged: (value) {
+                final String value = _searchController.text.trim();
+                return setState(
+                  () => filteredCountries = Utils.filterCountries(
+                    countries: widget.countries,
+                    locale: widget.locale,
+                    value: value,
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-            controller: widget.scrollController,
-            child: Column(
-              children: [
-                if (favoriteCountries != null &&
-                    favoriteCountries!.isNotEmpty) ...{
-                  if (widget.favoriteHeadlineWidget != null)
-                    widget.favoriteHeadlineWidget!,
+          Expanded(
+            child: SingleChildScrollView(
+              controller: widget.scrollController,
+              child: Column(
+                children: [
+                  if (favoriteCountries != null &&
+                      favoriteCountries!.isNotEmpty) ...{
+                    if (widget.favoriteHeadlineWidget != null)
+                      widget.favoriteHeadlineWidget!,
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: widget.favoriteCountries?.length,
+                      itemBuilder: (context, index) {
+                        return DirectionalCountryListTile(
+                          country: favoriteCountries![index],
+                          locale: widget.locale,
+                          showFlags: widget.showFlags!,
+                          useEmoji: widget.useEmoji!,
+                        );
+                      },
+                    ),
+                  },
+                  if (widget.countryListHeadlineWidget != null)
+                    widget.countryListHeadlineWidget!,
                   ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
+                    controller: widget.scrollController,
                     shrinkWrap: true,
-                    itemCount: widget.favoriteCountries?.length,
-                    itemBuilder: (context, index) {
+                    itemCount: filteredCountries.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      Country country = filteredCountries[index];
+
                       return DirectionalCountryListTile(
-                        country: favoriteCountries![index],
+                        country: country,
                         locale: widget.locale,
                         showFlags: widget.showFlags!,
                         useEmoji: widget.useEmoji!,
                       );
                     },
                   ),
-                },
-                if (widget.countryListHeadlineWidget != null)
-                  widget.countryListHeadlineWidget!,
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: widget.scrollController,
-                  shrinkWrap: true,
-                  itemCount: filteredCountries.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Country country = filteredCountries[index];
-
-                    return DirectionalCountryListTile(
-                      country: country,
-                      locale: widget.locale,
-                      showFlags: widget.showFlags!,
-                      useEmoji: widget.useEmoji!,
-                    );
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
